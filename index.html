@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>CHC Monthly League</title>
+  </head>
+  <body>
+
+    <h1> CHC Monthly League </h1>
+    <pre id="result"> </pre>
+    <p id="noofcomments"> </p> 
+    <pre id="result_vote"></pre>
+
+    <pre id="debug" style="display: none"></pre>
+
+    <script>
+
+      var pre_result = document.getElementById("result");
+      var debug = document.getElementById("debug");
+      var noofcomments = document.getElementById("noofcomments");
+      var result_vote = document.getElementById("result_vote");
+      var json_comments;
+
+      var players = ["prison", "sandesh", "sanjay", "nungkha", "jayraj", "adarsh", "void", "uJackal5"];
+
+      console.log(players);
+
+      var votes = new Array(8);
+      for(var i = 0; i < votes.length; i++)
+	  votes[i] = 0;
+
+      var voters = new Array();
+
+      console.log(votes);
+
+      window.fbAsyncInit = function() {
+	  FB.init({
+	      appId            : '182729410374273',
+	      autoLogAppEvents : true,
+	      xfbml            : true,
+	      version          : 'v10.0'
+	  });
+
+	  FB.api(
+	      '/2279626385635812_2828581180740327/comments?limit=1000',
+	      'GET',
+	      {access_token: "EAACmMQGYaoEBAD3sbbTVT8IPbntYFaeqtAXd7p2Bc71RYmVRo3HnNTSM2sJVKtHyjCkdJantiDuGRgUsIGZCnsgQNngGjZA7KXc2Dbnn78z7gNLtGduRu8x4hK6G6vpZAXwjUQmYUWm9QH7bvqZBH0JASTZCRgr75vYgJ2UnCzMNynjSSAqw3sUmqsTQZB3ipltFYZA2vnthQOS8EHLi2Ue"},	
+	      function(response) {
+		  pre_result.innerText = JSON.stringify(response);
+		  json_comments = JSON.parse(JSON.stringify(response));
+
+		  noofcomments.innerText = "Total Comments: " + json_comments.data.length;
+
+		  console.log(json_comments.data[0]);
+
+
+		  for(var i = 0; i < json_comments.data.length; i++){
+
+		      var comment_data = json_comments.data[i];
+		      // console.log(comment_data.from.name);
+
+		      // if(voters.includes(comment_data.from
+
+		      var comment = comment_data.message.toLowerCase();
+
+		      for(var j = 0; j < players.length; j++){
+			  if(comment.includes(players[j])) {
+			      votes[j] ++;
+			      
+			      break;
+			  }
+		      }
+
+		      debug.innerText += json_comments.data[i].message + "\n";
+		      
+		  }
+
+		  for(var i = 0; i < players.length; i++){
+		      result_vote.innerText += players[i] + " : " + votes[i] + " \n";
+		  }
+
+	      }
+	  );	  
+
+      };
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+
+  </body>
+</html>
